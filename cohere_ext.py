@@ -1,5 +1,6 @@
 import cohere
-co = cohere.Client('')
+import re
+co = cohere.Client('4Y9bTsinmAkWwqpWj2ho2bTr1zkklfU9sOcgQ0oc')
 
 def generate_code_snippets(text):
     response = co.generate(
@@ -13,9 +14,12 @@ def generate_code_snippets(text):
 def select_relevant_images(captions, lecture_summary):
     response = co.generate(
         model='command-nightly',
-        prompt=f"Given the following lecture content, {lecture_summary}, and the following image captions, {captions}, select the most relevant images that will help the reader understand the content in the lecture. Only return the relevant image captions and discard the rest.",
+        prompt=f"Given the following lecture content, {lecture_summary}, and the following image captions, {captions}, select the most relevant images that will help the reader understand the content in the lecture. Only return the relevant image file name (with extension) and discard the rest.",
         max_tokens=200,
         temperature=0.7
     )
-    print(response)
-    return response.generations[0].text.split('\n')
+    pattern = r'image_\d+\.png'
+    # Find all matches in the text
+    image_filenames = re.findall(pattern, response.generations[0].text)
+    print("response.generations[0].text: ", response.generations[0].text)
+    return image_filenames

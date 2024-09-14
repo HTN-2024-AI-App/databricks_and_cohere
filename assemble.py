@@ -11,10 +11,13 @@ import os
 def assemble_content(path_to_pdf = "lecture_slides.pdf", lecture_summary = DUMMY_DATA_SUMMARY):
     df, slide_images = prep_data(path_to_pdf, lecture_summary) 
     try:
-        select_relevant_images(helper(slide_images), lecture_summary)
+        captions = helper(slide_images)
+        selected = select_relevant_images(captions, lecture_summary)
     finally:
         for img in slide_images:
-            os.remove(img)
-    
+            if img not in selected: 
+                os.remove(img)
+                del captions[img]
+        return captions
 
 assemble_content() # TODO change this to Databricks FileStore
