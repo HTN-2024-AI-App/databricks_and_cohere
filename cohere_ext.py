@@ -11,6 +11,15 @@ def generate_code_snippets(text):
     )
     return response.generations[0].text
 
+def generate_mermaid_diagram(text):
+    response = co.generate(
+        model='command-nightly',
+        prompt=f"Based on the following lecture content, generate a mermaid mindmap that will help reader understand the content in explained in the lecture content as given:\n{text}.",
+        max_tokens=500,
+        temperature=0.7
+    )
+    return response.generations[0].text
+
 def select_relevant_images(captions, lecture_summary):
     response = co.generate(
         model='command-nightly',
