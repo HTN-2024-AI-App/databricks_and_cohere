@@ -1,5 +1,5 @@
 from Data_Preparation import prep_data
-from cohere_ext import call_cohere, generate_code_snippets
+from cohere_ext import generate_code_snippets
 from dummy_data import DUMMY_DATA_SUMMARY
 
 def assemble_content(row):

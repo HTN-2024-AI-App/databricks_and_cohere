@@ -1,6 +1,4 @@
 import cohere
-from pyspark.sql.functions import col, concat, lit
-
 co = cohere.Client('')
 
 def generate_code_snippets(text):
@@ -21,9 +19,3 @@ def select_relevant_images(text, image_count):
     )
     print(response)
     return response.generations[0].text.split('\n')
-
-def call_cohere(df, slide_images):
-    # Use Spark to apply the Cohere functions
-    df = df.withColumn("code_snippets", generate_code_snippets(df.lecture_summary))
-    # df = df.withColumn("image_descriptions", select_relevant_images(concat(col("summary"), lit(" "), col("slide_content")), lit(len(slide_images))))
-    return df
