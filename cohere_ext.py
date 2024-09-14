@@ -10,10 +10,10 @@ def generate_code_snippets(text):
     )
     return response.generations[0].text
 
-def select_relevant_images(text, image_count):
+def select_relevant_images(captions, lecture_summary):
     response = co.generate(
         model='command-nightly',
-        prompt=f"Given the following lecture content, describe {image_count} relevant images that should be included:\n{text}",
+        prompt=f"Given the following lecture content, {lecture_summary}, and the following image captions, {captions}, select the most relevant images that will help the reader understand the content in the lecture. Only return the relevant image captions and discard the rest.",
         max_tokens=200,
         temperature=0.7
     )

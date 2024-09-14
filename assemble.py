@@ -1,29 +1,20 @@
 from Data_Preparation import prep_data
-from cohere_ext import generate_code_snippets
+from cohere_ext import generate_code_snippets, select_relevant_images
 from dummy_data import DUMMY_DATA_SUMMARY
-
-def assemble_content(row):
-    content = f"Lecture Summary:\n{row.summary}\n\n"
-    content += f"Code Snippets:\n{row.code_snippets}\n\n"
-    content += f"Relevant Images:\n{row.image_descriptions}"
-    return content
-
-
-print(generate_code_snippets(DUMMY_DATA_SUMMARY))
+from groq_helper import helper
+import os
 
 # TODO change this to Databricks FileStore
-# df, slide_images = prep_data("lecture_slides.pdf", DUMMY_DATA_SUMMARY)
-# df = call_cohere(df, slide_images)
+# TODO Save the results back to Databricks FileStore
 
-# df = df.withColumn("final_content", assemble_content(df))
 
-# # TODO Save the results back to Databricks FileStore
-# output_path = "enhanced_lecture_summary.txt"
-# df.select("final_content").write.text(output_path)
+def assemble_content(path_to_pdf = "lecture_slides.pdf", lecture_summary = DUMMY_DATA_SUMMARY):
+    df, slide_images = prep_data(path_to_pdf, lecture_summary) 
+    try:
+        select_relevant_images(helper(slide_images), lecture_summary)
+    finally:
+        for img in slide_images:
+            os.remove(img)
+    
 
-# # Save images
-# for i, img in enumerate(slide_images):
-#     with open(f"lecture_image_{i}.png", "wb") as f:
-#         f.write(img)
-
-# print(df)
+assemble_content() # TODO change this to Databricks FileStore
